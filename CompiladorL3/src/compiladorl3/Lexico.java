@@ -72,15 +72,15 @@ public class Lexico {
                     if(c == ' ' || c == '\t' || c == '\n' || c == '\r' ){ //caracteres de espaço em branco ASCII tradicionais 
                         estado = 0;
                     }
-                    else if(this.isLetra(c) || c == '_'){
+                    else if(this.isLetra(c) || c == '_'){ //identificador
                         lexema.append(c);
                         estado = 1;
                     }
-                    else if(this.isDigito(c)){
+                    else if(this.isDigito(c)){ //Real
                         lexema.append(c);
                         estado = 2;
                     }
-                    else if(c == ')' || 
+                    else if(c == ')' || //Caracter especial
                             c == '(' ||
                             c == '{' ||
                             c == '}' ||
@@ -88,7 +88,17 @@ public class Lexico {
                             c == ';'){
                         lexema.append(c);
                         estado = 5;
-                    }else if(c == '$'){
+                    } else if (c == '+' || c == '/' || c == '*' || c == '-' || c== '%') {
+                        lexema.append(c);
+                        estado = 6;
+                    } else if (c == '<' || c == '>' || c == '=') {
+                        lexema.append(c);
+                        estado = 7;
+                    } else if (c == '=') {
+                        lexema.append(c);
+                        estado = 8;
+                    }
+                    else if(c == '$'){
                         lexema.append(c);
                         estado = 99;
                         this.back();
@@ -98,19 +108,32 @@ public class Lexico {
                     }
                     break;
                 case 1:
-                    if(this.isLetra(c) || this.isDigito(c) || c == '_'){
+                    if(this.isLetra(c) || this.isDigito(c) || c == '_'){ //identificador ou palavra reservada
                         lexema.append(c);
                         estado = 1;                        
-                    }else{
-                        this.back();
-                        return new Token(lexema.toString(), Token.TIPO_IDENTIFICADOR);                        
-                    }
+                    }else{ //palavras reservadas
+                            if ("if".contentEquals(lexema.toString()) ||
+                                    "main".contentEquals(lexema.toString()) ||
+                                    "else".contentEquals(lexema.toString()) ||
+                                    "while".contentEquals(lexema.toString()) ||
+                                    "do".contentEquals(lexema.toString()) ||
+                                    "for".contentEquals(lexema.toString()) ||
+                                    "int".contentEquals(lexema.toString()) ||
+                                    "float".contentEquals(lexema.toString()) ||
+                                    "char".contentEquals(lexema.toString())) {
+                                this.back();
+                                return new Token(lexema.toString(), Token.TIPO_PALAVRA_RESERVADA);
+                            }
+
+                            this.back();
+                            return new Token(lexema.toString(), Token.TIPO_IDENTIFICADOR);
+                        }                       
                     break;
-                case 2:
+                case 2: //Inteiro ou Real
                     if(this.isDigito(c)){
                         lexema.append(c);
                         estado = 2;
-                    }else if(c == '.'){
+                    }else if(c == '.'){ //Encaminha para estado 3, pois é real.
                         lexema.append(c);
                         estado = 3;
                     }else{
@@ -118,7 +141,7 @@ public class Lexico {
                         return new Token(lexema.toString(), Token.TIPO_INTEIRO);
                     }
                     break;
-                case 3:
+                case 3: //Real
                     if(this.isDigito(c)){
                         lexema.append(c);
                         estado = 4;
@@ -138,6 +161,52 @@ public class Lexico {
                 case 5:
                     this.back();
                     return new Token(lexema.toString(), Token.TIPO_CARACTER_ESPECIAL); 
+                case 6:
+                    this.back();
+                    return new Token(lexema.toString(), Token.TIPO_OPERADOR_ARITMETICO);
+                case 7:
+                    if (c == '=') {
+                        lexema.append(c);
+                        if ("==".contentEquals(lexema.toString())) {
+                            estado = 0;
+                            return new Token(lexema.toString(), Token.TIPO_OPERADOR_RELACIONAL);
+                        } else {
+                            estado = 7;
+                        }
+                    } else if (c == ' ' || c == '\t' || c == '\n' || c == '\r') {
+                        this.back();
+                        return new Token(lexema.toString(), Token.TIPO_OPERADOR_ATRIBUICAO);
+                    } else {
+                        lexema.append(c);
+                        throw new RuntimeException("Erro: operador incorreto \"" + lexema.toString() + "\"");
+                    }
+                    break;
+                case 8:
+                    if(c=='='){
+                        lexema.append(c);
+                        if ("<=".contentEquals(lexema.toString()) ||
+                                ">=".contentEquals(lexema.toString()) ||
+                                "==".contentEquals(lexema.toString())) {
+                            estado = 0;
+                            return new Token(lexema.toString(), Token.TIPO_OPERADOR_RELACIONAL);
+                        } else {
+                            throw new RuntimeException(
+                                    "Erro: operador relacional incorreto \"" + lexema.toString() + "\"");
+                        }
+                    }
+                        else if ("<".contentEquals(lexema.toString()) ||
+                        ">".contentEquals(lexema.toString()) ||
+                        "<=".contentEquals(lexema.toString()) ||
+                        ">=".contentEquals(lexema.toString()) ||
+                        "<>".contentEquals(lexema.toString())) {
+                         this.back();
+                         return new Token(lexema.toString(), Token.TIPO_OPERADOR_RELACIONAL);
+                        } else if(c == ' ' || c == '\t' || c == '\n' || c == '\r'){
+                            this.back();
+                            return new Token(lexema.toString(), Token.TIPO_OPERADOR_ATRIBUICAO);
+                        } else {
+                            throw new RuntimeException("Erro: operador relacional incorreto \"" + lexema.toString() + "\"");
+                        }
                 case 99:
                     return new Token(lexema.toString(), Token.TIPO_FIM_CODIGO); 
             }

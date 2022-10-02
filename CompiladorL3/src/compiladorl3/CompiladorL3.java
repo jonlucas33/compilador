@@ -21,8 +21,6 @@ public class CompiladorL3 {
         while((t = lexico.nextToken()) != null){
             System.out.println(t.toString());
         }
-
-
     }
     
 }
