@@ -88,17 +88,19 @@ public class Lexico {
                             c == ';'){
                         lexema.append(c);
                         estado = 5;
-                    } else if (c == '+' || c == '/' || c == '*' || c == '-' || c== '%') {
+                    } else if (c == '+' || c == '/' || c == '*' || c == '-' || c== '%') {//Opeardor aritmético
                         lexema.append(c);
                         estado = 6;
-                    } else if (c == '=') {
+                    } else if (c == '=') {//Operador de atribuição
                         lexema.append(c);
                         estado = 7;
-                    } else if (c == '<' || c == '>' || c == '=') {
+                    } else if (c == '<' || c == '>' || c == '=') {//Operador relacional
                         lexema.append(c);
                         estado = 8;
-                    } 
-                    else if(c == '$'){
+                    }else if (c == '\'') {//Char
+                        this.back();
+                        estado = 9;
+                    } else if(c == '$'){//Fim do código
                         lexema.append(c);
                         estado = 99;
                         this.back();
@@ -149,7 +151,7 @@ public class Lexico {
                         throw new RuntimeException("Erro: número float inválido \"" + lexema.toString() + "\"");
                     }
                     break;
-                case 4:
+                case 4://Real
                     if(this.isDigito(c)){
                         lexema.append(c);
                         estado = 4;
@@ -206,6 +208,30 @@ public class Lexico {
                             return new Token(lexema.toString(), Token.TIPO_OPERADOR_ATRIBUICAO);
                         } else {
                             throw new RuntimeException("Erro: operador relacional incorreto \"" + lexema.toString() + "\"");
+                        }
+                case 9:
+                        if (c == '\'') {
+                            lexema.append(c);
+                            estado = 10;
+                        } else {
+                            throw new RuntimeException(
+                                    "Erro: sequência de caractere inválido \"" + lexema.toString() + "\"");
+                        }
+                        break;
+                case 10:
+                        if (this.isDigito(c) || this.isLetra(c)) {
+                            lexema.append(c);
+                            estado = 11;
+                        } else {
+                            throw new RuntimeException("Erro: sequência de Char inválida \"" + lexema.toString() + "\"");
+                        }
+                        break;
+                case 11:
+                        if (c=='\'') {
+                            lexema.append(c);
+                            return new Token(lexema.toString(), token.TIPO_CHAR);
+                        } else {
+                            throw new RuntimeException("Erro: sequência de Char inválida \"" + lexema.toString() + "\"");
                         }
                 case 99:
                     return new Token(lexema.toString(), Token.TIPO_FIM_CODIGO); 
