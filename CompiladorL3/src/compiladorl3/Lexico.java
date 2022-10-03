@@ -91,13 +91,13 @@ public class Lexico {
                     } else if (c == '+' || c == '/' || c == '*' || c == '-' || c== '%') {
                         lexema.append(c);
                         estado = 6;
-                    } else if (c == '<' || c == '>' || c == '=') {
-                        lexema.append(c);
-                        estado = 7;
                     } else if (c == '=') {
                         lexema.append(c);
+                        estado = 7;
+                    } else if (c == '<' || c == '>' || c == '=') {
+                        lexema.append(c);
                         estado = 8;
-                    }
+                    } 
                     else if(c == '$'){
                         lexema.append(c);
                         estado = 99;
