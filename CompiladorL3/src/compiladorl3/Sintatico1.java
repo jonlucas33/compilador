@@ -8,16 +8,45 @@ public class Sintatico1 {
         this.lexico=lexico;
     }
     
-    public void S(){
+    public void S(){ //estado inicial
+        this.token = this.lexico.nextToken();
+        if (!token.getLexema().equals("main")) {
+            throw new RuntimeException("Main não declarado: " + this.token.getLexema());
+        }
+        this.token = this.lexico.nextToken();
+        if (!token.getLexema().equals("(")) {
+            throw new RuntimeException(
+                    "Parênteses não foi aberto: " + this.token.getLexema());
+        }
+        this.token = this.lexico.nextToken();
+        if (!token.getLexema().equals(")")) {
+            throw new RuntimeException(
+                    "Parênteses não foi fechado: " + this.token.getLexema());
+        }
         this.token=this.lexico.nextToken();
         this.E();
         if(this.token.getTipo() == Token.TIPO_FIM_CODIGO){
-            System.out.println("O código ta massa! Tu botou para torar.");
+            System.out.println("Código finalizado.");
         }else{
              throw new RuntimeException("Erro! Era para ser um identificador " + "ou numero proximo de "+ this.token.getLexema());
         }
     }
     
+    //Bloco/case
+    private void B()  {
+
+        if (!this.token.getLexema().equals("{")) {
+            throw new RuntimeException("Error: Expected open braces, near" + this.token.getLexema());
+        }
+
+        this.token = this.lexico.nextToken();
+
+        if (!this.token.getLexema().equals("}")) {
+            throw new RuntimeException("Error: Expected close braces, near: " + this.token.getLexema());
+        }
+
+        this.token = this.lexico.nextToken();
+    }
     private void E(){
         this.T();
         this.El();
