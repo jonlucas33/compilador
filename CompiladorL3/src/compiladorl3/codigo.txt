@@ -1,7 +1,7 @@
 main(){
 int b;
-int 3;
 float c;
-char a
+char a;
+if()
 }
 $

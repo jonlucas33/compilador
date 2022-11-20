@@ -32,6 +32,7 @@ public class Sintatico1 {
         this.token=this.lexico.nextToken();
 
         B();
+
         if(this.token.getTipo() == Token.TIPO_FIM_CODIGO){
             System.out.println("Código finalizado.");
         }else{
@@ -74,6 +75,7 @@ public class Sintatico1 {
             CM();
         } else if (this.token.getLexema().equals("if")) {
             //Para operador Relacional - PR()
+            PR();
         } else if (this.token.getLexema().equals("while")) {
             //Para while loop - WH()
         } else if (this.token.getLexema().equals("}")) {
@@ -123,6 +125,42 @@ public class Sintatico1 {
         }
         this.token = this.lexico.nextToken();
     }
+
+    //Operador relacional - if
+    private void PR() throws FileNotFoundException {
+        if (!this.token.getLexema().equals("if")) {
+            this.lexico.getColumnAndLine(this.token.getLexema());
+            throw new RuntimeException("Palavra reservada errada: " +this.token.getLexema());            
+        }
+
+        this.token=this.lexico.nextToken();
+
+        if (!this.token.getLexema().equals("(")) {
+            this.lexico.getColumnAndLine(this.token.getLexema());
+            throw new RuntimeException("Parentêses não foi aberto: " +this.token.getLexema());
+        }
+
+        this.token = this.lexico.nextToken();
+
+        //Expressão relacional - ER()
+        //ER();
+
+        if (!token.getLexema().equals(")")) {
+            this.lexico.getColumnAndLine(this.token.getLexema());
+            throw new RuntimeException("Parênteses não foi fechado: " + this.token.getLexema());
+        }
+        this.token=this.lexico.nextToken();
+
+        CM();
+
+        if (this.token.getLexema().equals("else")) {
+            this.token=this.lexico.nextToken();
+            CM();
+        } else {
+            return;
+        }
+    }
+
 
     private void E(){
         this.T();
