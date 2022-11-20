@@ -71,13 +71,15 @@ public class Sintatico1 {
             CM();
         } else if (this.token.getLexema().equals("{") ||
                 this.token.getTipo() == Token.TIPO_IDENTIFICADOR) {
-            //CB()
+            //Para comando dentro dos blocos - CB()
+            CB();
             CM();
         } else if (this.token.getLexema().equals("if")) {
             //Para operador Relacional - PR()
             PR();
         } else if (this.token.getLexema().equals("while")) {
-            //Para while loop - WH()
+            //Para while/loop - WH()
+            WH();
         } else if (this.token.getLexema().equals("}")) {
             return;
         } else {
@@ -126,6 +128,23 @@ public class Sintatico1 {
         this.token = this.lexico.nextToken();
     }
 
+    //Comando dentro dos blocos
+    private void CB() throws FileNotFoundException {
+        if (this.token.getLexema().equals("{")) {
+            B();
+        } else if (this.token.getTipo() == Token.TIPO_IDENTIFICADOR) {
+            //Método para atribuição => variável = valor
+            Atribuicao();
+        } else{
+            this.lexico.getColumnAndLine(this.token.getLexema());
+            throw new RuntimeException("Comando errado " +this.token.getLexema());
+        }
+    }
+
+    //Atribuição de valores para variáveis
+    private void Atribuicao() {
+    }
+
     //Operador relacional - if
     private void PR() throws FileNotFoundException {
         if (!this.token.getLexema().equals("if")) {
@@ -159,6 +178,33 @@ public class Sintatico1 {
         } else {
             return;
         }
+    }
+
+    //While/loop
+    private void WH() throws FileNotFoundException {
+        if (!this.token.getLexema().equals("while")) {
+            this.lexico.getColumnAndLine(this.token.getLexema());
+            throw new RuntimeException("Palavra reservada errada: " + this.token.getLexema());
+        }
+        this.token=this.lexico.nextToken();
+
+        if (!this.token.getLexema().equals("(")) {
+            this.lexico.getColumnAndLine(this.token.getLexema());
+            throw new RuntimeException("Parentêses não foi aberto: " +this.token.getLexema());
+        }
+
+        this.token = this.lexico.nextToken();
+
+        //Expressão relacional - ER()
+        //ER();
+
+        if (!token.getLexema().equals(")")) {
+            this.lexico.getColumnAndLine(this.token.getLexema());
+            throw new RuntimeException("Parênteses não foi fechado: " + this.token.getLexema());
+        }
+        this.token=this.lexico.nextToken();
+
+        CM();
     }
 
 
