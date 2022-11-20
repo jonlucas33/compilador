@@ -2,6 +2,8 @@ package compiladorl3;
 
 import java.io.FileNotFoundException;
 
+import javax.management.RuntimeErrorException;
+
 public class Sintatico1 {
     private Lexico lexico;
     private Token token;
@@ -10,7 +12,8 @@ public class Sintatico1 {
         this.lexico=lexico;
     }
     
-    public void S() throws FileNotFoundException{ //estado inicial
+    //Estado inicial
+    public void S() throws FileNotFoundException{ 
         this.token = this.lexico.nextToken();
         if (!token.getLexema().equals("main")) {
             this.lexico.getColumnAndLine(this.token.getLexema());
@@ -62,22 +65,63 @@ public class Sintatico1 {
         if (this.token.getLexema().equals("int") ||
                 this.token.getLexema().equals("float") ||
                 this.token.getLexema().equals("char")) {
-            //Para declaração - DEC();
+            //Para declaração - DEC()
+            DEC();
             CM();
         } else if (this.token.getLexema().equals("{") ||
                 this.token.getTipo() == Token.TIPO_IDENTIFICADOR) {
-            //CB();
+            //CB()
             CM();
         } else if (this.token.getLexema().equals("if")) {
-            //Para operador Relacional - PR();
+            //Para operador Relacional - PR()
         } else if (this.token.getLexema().equals("while")) {
-            //Para while loop - WH();
+            //Para while loop - WH()
         } else if (this.token.getLexema().equals("}")) {
             return;
         } else {
             this.lexico.getColumnAndLine(this.token.getLexema());
             throw new RuntimeException("Error, comando esperado: " + this.token.getLexema());
         }
+    }
+
+    //Declaração
+    private void DEC() throws FileNotFoundException {
+        if (this.token.getLexema().equals("int") ||
+                this.token.getLexema().equals("float") ||
+                this.token.getLexema().equals("char")) {
+                //Para Declaração - Declaracao() 
+                Declaracao();
+        } else {
+            this.lexico.getColumnAndLine(this.token.getLexema());
+            throw new RuntimeException("Error, comando esperado: " + this.token.getLexema());
+        }
+    }
+
+    //Declaração de variável
+    private void Declaracao() throws FileNotFoundException {
+        if (!(this.token.getLexema().equals("int") ||
+                this.token.getLexema().equals("float") ||
+                this.token.getLexema().equals("char"))) {
+                    this.lexico.getColumnAndLine(this.token.getLexema());
+                    throw new RuntimeException("Declaração de variável errada: " + this.token.getLexema());
+        }
+
+        this.token = this.lexico.nextToken();
+
+        //Identificador pós declaração do tipo de variável
+        if (this.token.getTipo() != Token.TIPO_IDENTIFICADOR) {
+            this.lexico.getColumnAndLine(this.token.getLexema());
+            throw new RuntimeException("Error, identificador esperado: " + this.token.getLexema());
+        }
+
+        this.token = this.lexico.nextToken();
+
+        //Ponto e vírgula pós identificador
+        if (!this.token.getLexema().equalsIgnoreCase(";")) {
+            this.lexico.getColumnAndLine(this.token.getLexema());
+            throw new RuntimeException("Error, ';' esperado: " + this.token.getLexema());
+        }
+        this.token = this.lexico.nextToken();
     }
 
     private void E(){
