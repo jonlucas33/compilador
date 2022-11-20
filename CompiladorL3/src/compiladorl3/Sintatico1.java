@@ -1,5 +1,7 @@
 package compiladorl3;
 
+import java.io.FileNotFoundException;
+
 public class Sintatico1 {
     private Lexico lexico;
     private Token token;
@@ -8,45 +10,76 @@ public class Sintatico1 {
         this.lexico=lexico;
     }
     
-    public void S(){ //estado inicial
+    public void S() throws FileNotFoundException{ //estado inicial
         this.token = this.lexico.nextToken();
         if (!token.getLexema().equals("main")) {
+            this.lexico.getColumnAndLine(this.token.getLexema());
             throw new RuntimeException("Main não declarado: " + this.token.getLexema());
         }
         this.token = this.lexico.nextToken();
         if (!token.getLexema().equals("(")) {
-            throw new RuntimeException(
-                    "Parênteses não foi aberto: " + this.token.getLexema());
+            this.lexico.getColumnAndLine(this.token.getLexema());
+            throw new RuntimeException("Parênteses não foi aberto: " + this.token.getLexema());
         }
         this.token = this.lexico.nextToken();
         if (!token.getLexema().equals(")")) {
-            throw new RuntimeException(
-                    "Parênteses não foi fechado: " + this.token.getLexema());
+            this.lexico.getColumnAndLine(this.token.getLexema());
+            throw new RuntimeException("Parênteses não foi fechado: " + this.token.getLexema());
         }
         this.token=this.lexico.nextToken();
-        this.E();
+
+        B();
         if(this.token.getTipo() == Token.TIPO_FIM_CODIGO){
             System.out.println("Código finalizado.");
         }else{
+             this.lexico.getColumnAndLine(this.token.getLexema());
              throw new RuntimeException("Erro! Era para ser um identificador " + "ou numero proximo de "+ this.token.getLexema());
         }
     }
     
     //Bloco/case
-    private void B()  {
+    private void B() throws FileNotFoundException  {
 
         if (!this.token.getLexema().equals("{")) {
-            throw new RuntimeException("Error: Expected open braces, near" + this.token.getLexema());
+            this.lexico.getColumnAndLine(this.token.getLexema());
+            throw new RuntimeException("Chave não foi aberta: " + this.token.getLexema());
         }
 
         this.token = this.lexico.nextToken();
 
+        CM();
+        
         if (!this.token.getLexema().equals("}")) {
-            throw new RuntimeException("Error: Expected close braces, near: " + this.token.getLexema());
+            this.lexico.getColumnAndLine(this.token.getLexema());
+            throw new RuntimeException("Chave não foi fechada: " + this.token.getLexema());
         }
 
         this.token = this.lexico.nextToken();
     }
+
+    //Comando
+    private void CM() throws FileNotFoundException {
+        if (this.token.getLexema().equals("int") ||
+                this.token.getLexema().equals("float") ||
+                this.token.getLexema().equals("char")) {
+            //Para declaração - DEC();
+            CM();
+        } else if (this.token.getLexema().equals("{") ||
+                this.token.getTipo() == Token.TIPO_IDENTIFICADOR) {
+            //CB();
+            CM();
+        } else if (this.token.getLexema().equals("if")) {
+            //Para operador Relacional - PR();
+        } else if (this.token.getLexema().equals("while")) {
+            //Para while loop - WH();
+        } else if (this.token.getLexema().equals("}")) {
+            return;
+        } else {
+            this.lexico.getColumnAndLine(this.token.getLexema());
+            throw new RuntimeException("Error, comando esperado: " + this.token.getLexema());
+        }
+    }
+
     private void E(){
         this.T();
         this.El();

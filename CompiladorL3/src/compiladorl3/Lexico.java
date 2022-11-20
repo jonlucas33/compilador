@@ -13,6 +13,9 @@ import java.nio.file.Paths;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.util.stream.Stream;
 
 /**
  *
@@ -31,6 +34,25 @@ public class Lexico {
         } catch (IOException ex) {
             ex.printStackTrace();
         }        
+    }
+
+    public void getColumnAndLine(String tokenError) throws FileNotFoundException {
+        try (BufferedReader inputStream = new BufferedReader(new FileReader("C:/Users/jllop/compilador-3/CompiladorL3/src/compiladorl3/codigo.txt"))) {
+            Stream<String> read = inputStream.lines();
+            Object[] test = read.toArray();
+            for (int i = 0; i < test.length; i++) {
+                int value = test[i].toString().indexOf(tokenError);
+                if (value != -1) {
+                    System.out.println("Posição: " + value);
+                    System.out.println("Linha: " + i);
+                    break;
+                }
+            }
+        } catch (FileNotFoundException e) {
+            throw e;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
     
     //Retorna próximo char
