@@ -3,5 +3,8 @@ int b;
 float c;
 char a;
 if()
+while()
+a = '1';
+b = 5;
 }
 $

@@ -123,7 +123,7 @@ public class Sintatico1 {
         //Ponto e vírgula pós identificador
         if (!this.token.getLexema().equalsIgnoreCase(";")) {
             this.lexico.getColumnAndLine(this.token.getLexema());
-            throw new RuntimeException("Error, ';' esperado: " + this.token.getLexema());
+            throw new RuntimeException("Error, Ponto e vírgula (';') esperado: " + this.token.getLexema());
         }
         this.token = this.lexico.nextToken();
     }
@@ -142,7 +142,53 @@ public class Sintatico1 {
     }
 
     //Atribuição de valores para variáveis
-    private void Atribuicao() {
+    private void Atribuicao() throws FileNotFoundException {
+        this.token=this.lexico.nextToken();
+        if (!this.token.getLexema().equals("=")) {
+            this.lexico.getColumnAndLine(this.token.getLexema());
+            throw new RuntimeException("Sinal de igual ('=') esperado " +this.token.getLexema());
+        }
+
+        this.token=this.lexico.nextToken();
+
+        //Para dar valores as variáveis => variável = inteiro|real|char - ATR()
+        ATR();
+
+        if (!this.token.getLexema().equalsIgnoreCase(";")) {
+            this.lexico.getColumnAndLine(this.token.getLexema());
+            throw new RuntimeException("Error, Ponto e vírgula (';') esperado: " + this.token.getLexema());
+        }
+        this.token = this.lexico.nextToken();
+    }
+
+    //Possíveis atribuições para a variável
+    private void ATR() {
+        if (this.token.getTipo() == Token.TIPO_CHAR) {
+            this.token=this.lexico.nextToken();
+            ATR();
+        } else if (this.token.getTipo() == Token.TIPO_INTEIRO) {
+            this.token=this.lexico.nextToken();
+            if (this.token.getLexema().equals("*") ||
+             this.token.getLexema().equals("/") ||
+             this.token.getLexema().equals("+") ||
+             this.token.getLexema().equals("-")) {
+                this.token=this.lexico.nextToken();
+                ATR();
+            } else if (this.token.getLexema().equalsIgnoreCase(";")) {
+                return;
+            }
+        } else if (this.token.getTipo() == Token.TIPO_REAL) {
+            this.token=this.lexico.nextToken();
+            if (this.token.getLexema().equals("*") ||
+             this.token.getLexema().equals("/") ||
+             this.token.getLexema().equals("+") ||
+             this.token.getLexema().equals("-")) {
+                this.token=this.lexico.nextToken();
+                ATR();
+            } else if (this.token.getLexema().equalsIgnoreCase(";")) {
+                return;
+            }
+        }
     }
 
     //Operador relacional - if
