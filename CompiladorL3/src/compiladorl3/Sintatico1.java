@@ -31,6 +31,7 @@ public class Sintatico1 {
         }
         this.token=this.lexico.nextToken();
 
+        //Bloco/case - B()
         B();
 
         if(this.token.getTipo() == Token.TIPO_FIM_CODIGO){
@@ -51,6 +52,7 @@ public class Sintatico1 {
 
         this.token = this.lexico.nextToken();
 
+        //Comando - CM()
         CM();
         
         if (!this.token.getLexema().equals("}")) {
@@ -265,7 +267,7 @@ public class Sintatico1 {
         if (this.token.getTipo() == Token.TIPO_IDENTIFICADOR) {
             this.token = this.lexico.nextToken();
 
-            //Segundo elemento tem que ser umoperador relacional.
+            //Segundo elemento tem que ser um operador relacional.
             if (this.token.getTipo() != Token.TIPO_OPERADOR_RELACIONAL) {
                 this.lexico.getColumnAndLine(this.token.getLexema());
                 throw new RuntimeException("Operador relacional esperado "+this.token.getLexema());
@@ -333,37 +335,5 @@ public class Sintatico1 {
             this.lexico.getColumnAndLine(this.token.getLexema());
             throw new RuntimeException("Ínicio de expressão incorreto "+this.token.getLexema());
         }
-    }
-
-
-    private void E(){
-        this.T();
-        this.El();
-    }
-    
-    private void El(){
-        if(this.token.getTipo() == Token.TIPO_OPERADOR_ARITMETICO){
-            this.OP();
-            this.T();
-            this.El();
-        }else{
-            
-        }     
-    }
-    
-    private void T(){
-        if(this.token.getTipo() == Token.TIPO_IDENTIFICADOR || this.token.getTipo() == Token.TIPO_INTEIRO || this.token.getTipo() == Token.TIPO_REAL){
-            this.token=this.lexico.nextToken();
-        }else{
-            throw new RuntimeException("Erro! Era para ser um identificador " + "ou numero proximo de "+ this.token.getLexema());
-        }        
-    }
-    
-    private void OP(){
-        if(this.token.getTipo() == Token.TIPO_OPERADOR_ARITMETICO){
-            this.token=this.lexico.nextToken();
-        }else{
-              throw new RuntimeException("Erro! Era para ser um operador" + " aritmetico(+/-/*/%/) proximo de "+ this.token.getLexema());
-        }      
     }
 }
