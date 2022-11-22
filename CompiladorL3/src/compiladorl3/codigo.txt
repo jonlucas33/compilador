@@ -1,9 +1,11 @@
 main(){
 int b;
+if(b>3){
 float c;
+}
+while(5>2){
 char a;
-if()
-while()
+}
 a = '1';
 b = 5;
 }
