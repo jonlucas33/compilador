@@ -5,8 +5,11 @@ import java.io.FileNotFoundException;
 import javax.management.RuntimeErrorException;
 
 public class Sintatico1 {
+
     private Lexico lexico;
     private Token token;
+    private CircularLinkedList semantico = new CircularLinkedList();
+    private CircularListNode tokenAux;
     
     public Sintatico1(Lexico lexico){
         this.lexico=lexico;
@@ -112,6 +115,15 @@ public class Sintatico1 {
                     throw new RuntimeException("Declaração de variável errada: " + this.token.getLexema());
         }
 
+        int type = 0;
+        if (this.token.getLexema().equals("char")) {
+            type = Token.TIPO_CHAR;
+        } else if (this.token.getLexema().equals("int")) {
+            type = Token.TIPO_INTEIRO;
+        } else if (this.token.getLexema().equals("float")) {
+            type = Token.TIPO_REAL;
+        }
+
         this.token = this.lexico.nextToken();
 
         //Identificador pós declaração do tipo de variável
@@ -120,6 +132,15 @@ public class Sintatico1 {
             throw new RuntimeException("Error, identificador esperado: " + this.token.getLexema());
         }
 
+        String variable = this.token.getLexema();
+        CircularListNode declarada = semantico.search(variable);
+
+        if (declarada!=null) {
+            this.lexico.getColumnAndLine(this.token.getLexema());
+            throw new RuntimeException("Variável já declarada: " + this.token.getLexema());
+        }
+
+        semantico.addLast(type, variable);
         this.token = this.lexico.nextToken();
 
         //Ponto e vírgula pós identificador
@@ -145,6 +166,14 @@ public class Sintatico1 {
 
     //Atribuição de valores para variáveis
     private void Atribuicao() throws FileNotFoundException {
+        if (this.token.getTipo() == Token.TIPO_IDENTIFICADOR) {
+            String variable = this.token.getLexema();
+            tokenAux = semantico.search(variable);
+            if (tokenAux==null) {
+            this.lexico.getColumnAndLine(this.token.getLexema());
+            throw new RuntimeException("Variável não declarada " +this.token.getLexema());
+            }
+        }
         this.token=this.lexico.nextToken();
         if (!this.token.getLexema().equals("=")) {
             this.lexico.getColumnAndLine(this.token.getLexema());
@@ -164,11 +193,19 @@ public class Sintatico1 {
     }
 
     //Possíveis atribuições para a variável
-    private void ATR() {
+    private void ATR() throws FileNotFoundException {
         if (this.token.getTipo() == Token.TIPO_CHAR) {
+            if (tokenAux.getType() != this.token.getTipo()) {
+            this.lexico.getColumnAndLine(this.token.getLexema());
+            throw new RuntimeException("Variável com tipo diferente: " + this.token.getLexema());
+            }
             this.token=this.lexico.nextToken();
             ATR();
         } else if (this.token.getTipo() == Token.TIPO_INTEIRO) {
+            if (tokenAux.getType() != this.token.getTipo()) {
+                this.lexico.getColumnAndLine(this.token.getLexema());
+                throw new RuntimeException("Variável com tipo diferente: " + this.token.getLexema());
+                }
             this.token=this.lexico.nextToken();
             if (this.token.getLexema().equals("*") ||
              this.token.getLexema().equals("/") ||
@@ -180,6 +217,10 @@ public class Sintatico1 {
                 return;
             }
         } else if (this.token.getTipo() == Token.TIPO_REAL) {
+            if (tokenAux.getType() != this.token.getTipo()) {
+                this.lexico.getColumnAndLine(this.token.getLexema());
+                throw new RuntimeException("Variável com tipo diferente: " + this.token.getLexema());
+                }
             this.token=this.lexico.nextToken();
             if (this.token.getLexema().equals("*") ||
              this.token.getLexema().equals("/") ||
@@ -284,7 +325,7 @@ public class Sintatico1 {
                 return;
             } else{
                 this.lexico.getColumnAndLine(this.token.getLexema());
-                throw new RuntimeException("Tipo de variáveis diferesntes "+this.token.getLexema());
+                throw new RuntimeException("Tipo de variáveis diferentes "+this.token.getLexema());
             }
 
         //Primeiro elemento da expressão é um valor(Real ou Inteiro).?

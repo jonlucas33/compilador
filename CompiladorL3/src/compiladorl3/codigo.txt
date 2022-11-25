@@ -1,12 +1,14 @@
 main(){
 int b;
-if(b>3){
+if(b<>3){
 float c;
+int d;
 }
-while(5>2){
+while(5==2){
 char a;
 }
 a = '1';
-b = 5;
+b=5;
+c=10.2;
 }
 $
