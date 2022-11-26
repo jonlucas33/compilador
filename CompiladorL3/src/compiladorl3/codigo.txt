@@ -1,14 +1,9 @@
-main(){
-int b;
-if(b<>3){
-float c;
-int d;
-}
-while(5==2){
-char a;
-}
-a = '1';
-b=5;
-c=10.2;
+int main(){
+	int a;
+	int i;
+	float b;
+	b = 1.0;	
+	a = 1;
+	int i;
 }
 $

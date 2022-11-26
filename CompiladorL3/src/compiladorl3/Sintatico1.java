@@ -17,19 +17,24 @@ public class Sintatico1 {
     
     //Estado inicial
     public void S() throws FileNotFoundException{ 
+        this.token=this.lexico.nextToken();
+        if (!token.getLexema().equals("int")) {
+           // this.lexico.getColumnAndLine(this.token.getLexema());
+            throw new RuntimeException("Necessário declarar 'int' para comando inicial: " + this.token.getLexema());
+        }
         this.token = this.lexico.nextToken();
         if (!token.getLexema().equals("main")) {
-            this.lexico.getColumnAndLine(this.token.getLexema());
+           // this.lexico.getColumnAndLine(this.token.getLexema());
             throw new RuntimeException("Main não declarado: " + this.token.getLexema());
         }
         this.token = this.lexico.nextToken();
         if (!token.getLexema().equals("(")) {
-            this.lexico.getColumnAndLine(this.token.getLexema());
+           // this.lexico.getColumnAndLine(this.token.getLexema());
             throw new RuntimeException("Parênteses não foi aberto: " + this.token.getLexema());
         }
         this.token = this.lexico.nextToken();
         if (!token.getLexema().equals(")")) {
-            this.lexico.getColumnAndLine(this.token.getLexema());
+           // this.lexico.getColumnAndLine(this.token.getLexema());
             throw new RuntimeException("Parênteses não foi fechado: " + this.token.getLexema());
         }
         this.token=this.lexico.nextToken();
@@ -40,7 +45,7 @@ public class Sintatico1 {
         if(this.token.getTipo() == Token.TIPO_FIM_CODIGO){
             System.out.println("Código finalizado.");
         }else{
-             this.lexico.getColumnAndLine(this.token.getLexema());
+           //  this.lexico.getColumnAndLine(this.token.getLexema());
              throw new RuntimeException("Erro! Era para ser um identificador " + "ou numero proximo de "+ this.token.getLexema());
         }
     }
@@ -49,7 +54,7 @@ public class Sintatico1 {
     private void B() throws FileNotFoundException  {
 
         if (!this.token.getLexema().equals("{")) {
-            this.lexico.getColumnAndLine(this.token.getLexema());
+           // this.lexico.getColumnAndLine(this.token.getLexema());
             throw new RuntimeException("Chave não foi aberta: " + this.token.getLexema());
         }
 
@@ -59,7 +64,7 @@ public class Sintatico1 {
         CM();
         
         if (!this.token.getLexema().equals("}")) {
-            this.lexico.getColumnAndLine(this.token.getLexema());
+           // this.lexico.getColumnAndLine(this.token.getLexema());
             throw new RuntimeException("Chave não foi fechada: " + this.token.getLexema());
         }
 
@@ -88,7 +93,7 @@ public class Sintatico1 {
         } else if (this.token.getLexema().equals("}")) {
             return;
         } else {
-            this.lexico.getColumnAndLine(this.token.getLexema());
+           // this.lexico.getColumnAndLine(this.token.getLexema());
             throw new RuntimeException("Error, comando esperado: " + this.token.getLexema());
         }
     }
@@ -101,7 +106,7 @@ public class Sintatico1 {
                 //Para Declaração - Declaracao() 
                 Declaracao();
         } else {
-            this.lexico.getColumnAndLine(this.token.getLexema());
+           // this.lexico.getColumnAndLine(this.token.getLexema());
             throw new RuntimeException("Error, comando esperado: " + this.token.getLexema());
         }
     }
@@ -111,7 +116,7 @@ public class Sintatico1 {
         if (!(this.token.getLexema().equals("int") ||
                 this.token.getLexema().equals("float") ||
                 this.token.getLexema().equals("char"))) {
-                    this.lexico.getColumnAndLine(this.token.getLexema());
+                   // this.lexico.getColumnAndLine(this.token.getLexema());
                     throw new RuntimeException("Declaração de variável errada: " + this.token.getLexema());
         }
 
@@ -128,7 +133,7 @@ public class Sintatico1 {
 
         //Identificador pós declaração do tipo de variável
         if (this.token.getTipo() != Token.TIPO_IDENTIFICADOR) {
-            this.lexico.getColumnAndLine(this.token.getLexema());
+           // this.lexico.getColumnAndLine(this.token.getLexema());
             throw new RuntimeException("Error, identificador esperado: " + this.token.getLexema());
         }
 
@@ -136,7 +141,7 @@ public class Sintatico1 {
         CircularListNode declarada = semantico.search(variable);
 
         if (declarada!=null) {
-            this.lexico.getColumnAndLine(this.token.getLexema());
+           // this.lexico.getColumnAndLine(this.token.getLexema());
             throw new RuntimeException("Variável já declarada: " + this.token.getLexema());
         }
 
@@ -145,7 +150,7 @@ public class Sintatico1 {
 
         //Ponto e vírgula pós identificador
         if (!this.token.getLexema().equalsIgnoreCase(";")) {
-            this.lexico.getColumnAndLine(this.token.getLexema());
+           // this.lexico.getColumnAndLine(this.token.getLexema());
             throw new RuntimeException("Error, Ponto e vírgula (';') esperado: " + this.token.getLexema());
         }
         this.token = this.lexico.nextToken();
@@ -159,7 +164,7 @@ public class Sintatico1 {
             //Método para atribuição => variável = valor
             Atribuicao();
         } else{
-            this.lexico.getColumnAndLine(this.token.getLexema());
+            //.lexico.getColumnAndLine(this.token.getLexema());
             throw new RuntimeException("Comando errado " +this.token.getLexema());
         }
     }
@@ -170,13 +175,13 @@ public class Sintatico1 {
             String variable = this.token.getLexema();
             tokenAux = semantico.search(variable);
             if (tokenAux==null) {
-            this.lexico.getColumnAndLine(this.token.getLexema());
+            //this.lexico.getColumnAndLine(this.token.getLexema());
             throw new RuntimeException("Variável não declarada " +this.token.getLexema());
             }
         }
         this.token=this.lexico.nextToken();
         if (!this.token.getLexema().equals("=")) {
-            this.lexico.getColumnAndLine(this.token.getLexema());
+            //this.lexico.getColumnAndLine(this.token.getLexema());
             throw new RuntimeException("Sinal de igual ('=') esperado " +this.token.getLexema());
         }
 
@@ -186,7 +191,7 @@ public class Sintatico1 {
         ATR();
 
         if (!this.token.getLexema().equalsIgnoreCase(";")) {
-            this.lexico.getColumnAndLine(this.token.getLexema());
+           // this.lexico.getColumnAndLine(this.token.getLexema());
             throw new RuntimeException("Error, Ponto e vírgula (';') esperado: " + this.token.getLexema());
         }
         this.token = this.lexico.nextToken();
@@ -196,14 +201,14 @@ public class Sintatico1 {
     private void ATR() throws FileNotFoundException {
         if (this.token.getTipo() == Token.TIPO_CHAR) {
             if (tokenAux.getType() != this.token.getTipo()) {
-            this.lexico.getColumnAndLine(this.token.getLexema());
+           // this.lexico.getColumnAndLine(this.token.getLexema());
             throw new RuntimeException("Variável com tipo diferente: " + this.token.getLexema());
             }
             this.token=this.lexico.nextToken();
             ATR();
         } else if (this.token.getTipo() == Token.TIPO_INTEIRO) {
             if (tokenAux.getType() != this.token.getTipo()) {
-                this.lexico.getColumnAndLine(this.token.getLexema());
+                //this.lexico.getColumnAndLine(this.token.getLexema());
                 throw new RuntimeException("Variável com tipo diferente: " + this.token.getLexema());
                 }
             this.token=this.lexico.nextToken();
@@ -218,7 +223,7 @@ public class Sintatico1 {
             }
         } else if (this.token.getTipo() == Token.TIPO_REAL) {
             if (tokenAux.getType() != this.token.getTipo()) {
-                this.lexico.getColumnAndLine(this.token.getLexema());
+               // this.lexico.getColumnAndLine(this.token.getLexema());
                 throw new RuntimeException("Variável com tipo diferente: " + this.token.getLexema());
                 }
             this.token=this.lexico.nextToken();
@@ -237,14 +242,14 @@ public class Sintatico1 {
     //Operador relacional - if
     private void PR() throws FileNotFoundException {
         if (!this.token.getLexema().equals("if")) {
-            this.lexico.getColumnAndLine(this.token.getLexema());
+           // this.lexico.getColumnAndLine(this.token.getLexema());
             throw new RuntimeException("Palavra reservada errada: " +this.token.getLexema());            
         }
 
         this.token=this.lexico.nextToken();
 
         if (!this.token.getLexema().equals("(")) {
-            this.lexico.getColumnAndLine(this.token.getLexema());
+           // this.lexico.getColumnAndLine(this.token.getLexema());
             throw new RuntimeException("Parentêses não foi aberto: " +this.token.getLexema());
         }
 
@@ -256,7 +261,7 @@ public class Sintatico1 {
         this.token = this.lexico.nextToken();
 
         if (!token.getLexema().equals(")")) {
-            this.lexico.getColumnAndLine(this.token.getLexema());
+           // this.lexico.getColumnAndLine(this.token.getLexema());
             throw new RuntimeException("Parênteses não foi fechado: " + this.token.getLexema());
         }
         this.token=this.lexico.nextToken();
@@ -274,13 +279,13 @@ public class Sintatico1 {
     //While/loop
     private void WH() throws FileNotFoundException {
         if (!this.token.getLexema().equals("while")) {
-            this.lexico.getColumnAndLine(this.token.getLexema());
+           // this.lexico.getColumnAndLine(this.token.getLexema());
             throw new RuntimeException("Palavra reservada errada: " + this.token.getLexema());
         }
         this.token=this.lexico.nextToken();
 
         if (!this.token.getLexema().equals("(")) {
-            this.lexico.getColumnAndLine(this.token.getLexema());
+           // this.lexico.getColumnAndLine(this.token.getLexema());
             throw new RuntimeException("Parentêses não foi aberto: " +this.token.getLexema());
         }
 
@@ -292,7 +297,7 @@ public class Sintatico1 {
         this.token = this.lexico.nextToken();
 
         if (!token.getLexema().equals(")")) {
-            this.lexico.getColumnAndLine(this.token.getLexema());
+           // this.lexico.getColumnAndLine(this.token.getLexema());
             throw new RuntimeException("Parênteses não foi fechado: " + this.token.getLexema());
         }
         this.token=this.lexico.nextToken();
@@ -310,7 +315,7 @@ public class Sintatico1 {
 
             //Segundo elemento tem que ser um operador relacional.
             if (this.token.getTipo() != Token.TIPO_OPERADOR_RELACIONAL) {
-                this.lexico.getColumnAndLine(this.token.getLexema());
+               // this.lexico.getColumnAndLine(this.token.getLexema());
                 throw new RuntimeException("Operador relacional esperado "+this.token.getLexema());
             }
 
@@ -324,7 +329,7 @@ public class Sintatico1 {
             } else if (this.token.getTipo() == Token.TIPO_REAL) {
                 return;
             } else{
-                this.lexico.getColumnAndLine(this.token.getLexema());
+               // this.lexico.getColumnAndLine(this.token.getLexema());
                 throw new RuntimeException("Tipo de variáveis diferentes "+this.token.getLexema());
             }
 
@@ -335,7 +340,7 @@ public class Sintatico1 {
 
             //Segundo elemento tem que ser umoperador relacional.
             if (this.token.getTipo() != Token.TIPO_OPERADOR_RELACIONAL) {
-                this.lexico.getColumnAndLine(this.token.getLexema());
+               // this.lexico.getColumnAndLine(this.token.getLexema());
                 throw new RuntimeException("Operador relacional esperado "+this.token.getLexema());
             }
 
@@ -345,14 +350,14 @@ public class Sintatico1 {
 
             //Não pode ser do tipo char.
             if (this.token.getTipo() == Token.TIPO_CHAR) {
-                this.lexico.getColumnAndLine(this.token.getLexema());
+                //this.lexico.getColumnAndLine(this.token.getLexema());
                 throw new RuntimeException("Tipo de variáveis diferesntes "+this.token.getLexema());
 
             //Terceiro elemento pode ser do tipo Identificador,pode ter três tipos => char|real|inteiro.
             } else if (this.token.getTipo() == Token.TIPO_IDENTIFICADOR) {
                 //Caso seja char.
                 if (this.token.getLexema().equals("char")) {
-                this.lexico.getColumnAndLine(this.token.getLexema());
+               // this.lexico.getColumnAndLine(this.token.getLexema());
                 throw new RuntimeException("Tipo de variáveis diferentes "+this.token.getLexema());
                 //Caso seja float.
                 } else if (this.token.getLexema().equals("float")) {
@@ -361,7 +366,7 @@ public class Sintatico1 {
                 } else if (this.token.getLexema().equals("int")) {
                     return;
                 } else{
-                this.lexico.getColumnAndLine(this.token.getLexema());
+               // this.lexico.getColumnAndLine(this.token.getLexema());
                 throw new RuntimeException("Tipo de variáveis diferentes "+this.token.getLexema());
                 }
 
@@ -373,8 +378,8 @@ public class Sintatico1 {
 
         //Primeiro elemento da expressão DIFERENTE de um identificador|valor(Real ou Inteiro).
         } else{
-            this.lexico.getColumnAndLine(this.token.getLexema());
-            throw new RuntimeException("Ínicio de expressão incorreto "+this.token.getLexema());
+           // this.lexico.getColumnAndLine(this.token.getLexema());
+            throw new RuntimeException("Ínicio de expressão relacional incorreto "+this.token.getLexema());
         }
     }
 }

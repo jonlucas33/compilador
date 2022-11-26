@@ -31,7 +31,7 @@ public class Lexico {
         }
     }
 
-    public void getColumnAndLine(String tokenError) throws FileNotFoundException {
+    /*public void getColumnAndLine(String tokenError) throws FileNotFoundException {
         try (BufferedReader inputStream = new BufferedReader(new FileReader("C:/Users/jllop/compilador-3/CompiladorL3/src/compiladorl3/codigo.txt"))) {
             Stream<String> read = inputStream.lines();
             Object[] test = read.toArray();
@@ -48,7 +48,7 @@ public class Lexico {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
     // Retorna prÃ³ximo char
     private char nextChar() {
@@ -144,7 +144,7 @@ public class Lexico {
                         this.back();
                     } else {
                         lexema.append(c);
-                        throw new RuntimeException("Erro: token invÃ¡lido \"" + lexema.toString() + "\"");
+                        throw new RuntimeException("Erro: token inválido \"" + lexema.toString() + "\"");
                     }
                     break;
                 case 1:
@@ -187,7 +187,7 @@ public class Lexico {
                         lexema.append(c);
                         estado = 4;
                     } else {
-                        throw new RuntimeException("Erro: nÃºmero float invÃ¡lido \"" + lexema.toString() + "\"");
+                        throw new RuntimeException("Erro: número float inválido \"" + lexema.toString() + "\"");
                     }
                     break;
                 case 4:
@@ -239,7 +239,7 @@ public class Lexico {
                         estado = 11;
                     } else {
                         throw new RuntimeException(
-                                "Erro: sequÃªncia de caractere invÃ¡lido \"" + lexema.toString() + "\"");
+                                "Erro: sequência de caractere inválido \"" + lexema.toString() + "\"");
                     }
                     break;
 
@@ -248,7 +248,7 @@ public class Lexico {
                         lexema.append(c);
                         estado = 12;
                     } else {
-                        throw new RuntimeException("Erro: sequÃªncia de Char invÃ¡lida \"" + lexema.toString() + "\"");
+                        throw new RuntimeException("Erro: sequência de Char inválido \"" + lexema.toString() + "\"");
                     }
                     break;
                 case 12:
@@ -256,7 +256,7 @@ public class Lexico {
                         lexema.append(c);
                         return new Token(lexema.toString(), Token.TIPO_CHAR);
                     } else {
-                        throw new RuntimeException("Erro: sequÃªncia de Char invÃ¡lida \"" + lexema.toString() + "\"");
+                        throw new RuntimeException("Erro: sequência de Char inválido \"" + lexema.toString() + "\"");
                     }
                 case 13:
                     if (this.isLetra(c) || this.isDigito(c) || c == '_') {
