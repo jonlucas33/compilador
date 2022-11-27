@@ -2,8 +2,6 @@ package compiladorl3;
 
 import java.io.FileNotFoundException;
 
-import javax.management.RuntimeErrorException;
-
 public class Sintatico1 {
 
     private Lexico lexico;
