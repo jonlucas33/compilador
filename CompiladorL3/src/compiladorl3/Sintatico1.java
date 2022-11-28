@@ -219,7 +219,8 @@ public class Sintatico1 {
             } else if (this.token.getLexema().equalsIgnoreCase(";")) {
                 return;
             }
-        } else if (this.token.getTipo() == Token.TIPO_REAL) {
+        } else if (this.token.getTipo() == Token.TIPO_REAL ||
+        this.token.getTipo() == Token.TIPO_IDENTIFICADOR) {
             if (tokenAux.getType() != this.token.getTipo()) {
                // this.lexico.getColumnAndLine(this.token.getLexema());
                 throw new RuntimeException("Variável com tipo diferente: " + this.token.getLexema());
@@ -339,7 +340,7 @@ public class Sintatico1 {
             //Segundo elemento tem que ser umoperador relacional.
             if (this.token.getTipo() != Token.TIPO_OPERADOR_RELACIONAL) {
                // this.lexico.getColumnAndLine(this.token.getLexema());
-                throw new RuntimeException("Operador relacional esperado "+this.token.getLexema());
+                throw new RuntimeException("Operador relacional esperado: "+this.token.getLexema());
             }
 
             this.token = this.lexico.nextToken();
@@ -349,7 +350,7 @@ public class Sintatico1 {
             //Não pode ser do tipo char.
             if (this.token.getTipo() == Token.TIPO_CHAR) {
                 //this.lexico.getColumnAndLine(this.token.getLexema());
-                throw new RuntimeException("Tipo de variáveis diferesntes "+this.token.getLexema());
+                throw new RuntimeException("Tipo de variáveis diferentes "+this.token.getLexema());
 
             //Terceiro elemento pode ser do tipo Identificador,pode ter três tipos => char|real|inteiro.
             } else if (this.token.getTipo() == Token.TIPO_IDENTIFICADOR) {

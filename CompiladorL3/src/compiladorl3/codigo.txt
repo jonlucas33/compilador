@@ -1,9 +1,9 @@
 int main(){
 	int a;
-	int i;
 	float b;
-	b = 1.0;	
-	a = 1;
-	int i;
+	b=3.5;
+	if(b>=2.0){
+		c=10;
+	}
 }
 $

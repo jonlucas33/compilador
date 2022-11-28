@@ -50,12 +50,12 @@ public class Lexico {
         }
     }*/
 
-    // Retorna prÃ³ximo char
+    // Retorna próximo char
     private char nextChar() {
         return this.conteudo[this.indiceConteudo++];
     }
 
-    // Verifica existe prÃ³ximo char ou chegou ao final do cÃ³digo fonte
+    // Verifica existe próximo char ou chegou ao final do código fonte
     private boolean hasNextChar() {
         return indiceConteudo < this.conteudo.length;
     }
@@ -87,7 +87,7 @@ public class Lexico {
         return (c == '+' || c == '-' || c == '*' || c == '/' || c == '%');
     }
 
-    // MÃ©todo retorna prÃ³ximo token vÃ¡lido ou retorna mensagem de erro.
+    // Método retorna próximo token válido ou retorna mensagem de erro.
     public Token nextToken() {
         Token token = null;
         char c;
@@ -98,13 +98,13 @@ public class Lexico {
             switch (estado) {
 
                 case 0:
-                    if (c == ' ' || c == '\t' || c == '\n' || c == '\r') { // caracteres de espaÃ§o em branco ASCII
+                    if (c == ' ' || c == '\t' || c == '\n' || c == '\r') { // caracteres de espaço em branco ASCII
                                                                            // tradicionais
                         estado = 0;
-                    } else if (this.isLetra(c) || c == '_') {
+                    } else if (this.isLetra(c) || c == '_') { //identificador
                         lexema.append(c);
                         estado = 1;
-                    } else if (this.isDigito(c)) {
+                    } else if (this.isDigito(c)) { //Real
                         lexema.append(c);
                         estado = 2;
                     } else if (c == '\'' || c == '\"') {
@@ -116,7 +116,7 @@ public class Lexico {
                             c == '{' ||
                             c == '}' ||
                             c == ',' ||
-                            c == ';') {
+                            c == ';') { //Caracter especial
                         lexema.append(c);
                         estado = 5;
 
@@ -132,8 +132,6 @@ public class Lexico {
                         lexema.append(c);
                         estado = 7;
 
-                        // Falta fazer <= e >=
-
                     } else if (c == '+' || c == '-' || c == '*' || c == '/' || c == '%') {
                         lexema.append(c);
                         estado = 9;
@@ -148,10 +146,10 @@ public class Lexico {
                     }
                     break;
                 case 1:
-                    if (this.isLetra(c) || this.isDigito(c) || c == '_') {
+                    if (this.isLetra(c) || this.isDigito(c) || c == '_') { //identificador ou palavra reservada
                         lexema.append(c);
                         estado = 13;
-                    } else {
+                    } else { //palavras reservadas
                         if ("if".contentEquals(lexema.toString()) ||
                                 "main".contentEquals(lexema.toString()) ||
                                 "else".contentEquals(lexema.toString()) ||
@@ -171,10 +169,10 @@ public class Lexico {
                     break;
 
                 case 2:
-                    if (this.isDigito(c)) {
+                    if (this.isDigito(c)) { //Inteiro ou Real
                         lexema.append(c);
                         estado = 2;
-                    } else if (c == '.') {
+                    } else if (c == '.') { //Encaminha para estado 3, pois é real.
                         lexema.append(c);
                         estado = 3;
                     } else {
@@ -182,7 +180,7 @@ public class Lexico {
                         return new Token(lexema.toString(), Token.TIPO_INTEIRO);
                     }
                     break;
-                case 3:
+                case 3:  //Real
                     if (this.isDigito(c)) {
                         lexema.append(c);
                         estado = 4;

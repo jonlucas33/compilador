@@ -19,7 +19,7 @@ public class CompiladorL3 {
      */
     public static void main(String[] args) throws FileNotFoundException {
         // TODO code application logic here
-        Lexico lexico = new Lexico("C:/Users/jllop/compilador-3/CompiladorL3/src/compiladorl3/codigo.txt");
+        Lexico lexico = new Lexico("C:/Users/jllop/compilador-5/CompiladorL3/src/compiladorl3/codigo.txt");
         Sintatico1 sintatico = new Sintatico1(lexico);
         sintatico.S();
         /*Token t = null;
